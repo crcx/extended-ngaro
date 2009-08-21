@@ -2,15 +2,11 @@
 ( NAS:			Ngaro Assembler                  )
 ( Forth:		Retro Forth 10                   )
 ( Version:		0.1                              )
-( File:			base.fs                          )
+( File:			nas.fs                           )
 ( Description:	        Basic word set for the compiler  )
 ( Licence:		See LICENCE                      )
 ( Needs:                Retro image with extend.ngaro    )
 ( ------------------------------------------------------ )
-
-: interpret-only-error
-        ." <-- only usable in interpreter mode !"
-;
 
 : state compiler @ ;
 : self  last     @ ;
@@ -24,9 +20,7 @@
 
 ( word classes for ngaro-opcodes and compiler-uops )
 
-: .opc state imode =if ;; then , ;
-: .uop state imode =if ;; then interpret-only-error drop ;
-
+: .opc state imode =if , ;; then , ;
 
 ( assembler words )
 
@@ -35,13 +29,6 @@
           ['] .opc self set-class
              ( n ) self set-value
 ;
-
-: uopcode: ( n : uop - )
-           create
-           ['] .uop self set-class
-              ( n ) self set-value
-;
-
 
 ( ngaro mnemonics )
 
@@ -76,80 +63,92 @@
 27 opcode: decs
 28 opcode: ldps          
 29 opcode: stps
-30 opcode: wais
+30 opcode: wait
 31 opcode: ins
 32 opcode: aot
+33 opcode: cofs
 
 ( extended instruction-set [only within trace compiler avariable] )
 
-31  uopcode: lia
-32  uopcode: psad
-33  uopcode: psar
-34  uopcode: plda
-35  uopcode: plra
-36  uopcode: tda
-37  uopcode: tra
-38  uopcode: tad
-39  uopcode: tar
-40  uopcode: tab
-41  uopcode: tba
-42  uopcode: adda
-43  uopcode: suba
-44  uopcode: diva
-45  uopcode: mula
-46  uopcode: inca
-47  uopcode: deca
-48  uopcode: anda
-49  uopcode: gora
-50  uopcode: xora
-51  uopcode: shla
-52  uopcode: slia
-53  uopcode: shra
-54  uopcode: sria
-55  uopcode: cmpa
-56  uopcode: ldra
-57  uopcode: stra
-58  uopcode: lib
-59  uopcode: psbd
-60  uopcode: psbr
-61  uopcode: pldb
-62  uopcode: plrb
-63  uopcode: tdb
-64  uopcode: trb
-65  uopcode: addb
-66  uopcode: subb
-67  uopcode: divb
-68  uopcode: mulb
-69  uopcode: incb
-70  uopcode: decb
-71  uopcode: andb
-72  uopcode: gorb
-73  uopcode: xorb
-74  uopcode: cmpb
-75  uopcode: shlb
-76  uopcode: slib
-77  uopcode: shrb
-78  uopcode: srib
-79  uopcode: ldrb
-80  uopcode: strb
-81  uopcode: ci
-82  uopcode: cieq
-83  uopcode: cigr
-84  uopcode: cile
-85  uopcode: cnza
-86  uopcode: ciza
-87  uopcode: cnzb
-88  uopcode: cizb
-89  uopcode: cra
-90  uopcode: crb
-91  uopcode: bra
-92  uopcode: brb
-93  uopcode: bi
-94  uopcode: bieq
-95  uopcode: bigr
-96  uopcode: bile
-97  uopcode: bnza
-98  uopcode: biza
-99  uopcode: bnzb
-100 uopcode: bizb
+34  opcode: lia
+35  opcode: psad
+36  opcode: psar
+37  opcode: plda
+38  opcode: plra
+39  opcode: tda
+40  opcode: tra
+41  opcode: tad
+42  opcode: tar
+43  opcode: tab
+44  opcode: tba
+45  opcode: adda
+46  opcode: suba
+47  opcode: diva
+48  opcode: mula
+49  opcode: inca
+50  opcode: deca
+51  opcode: anda
+52  opcode: gora
+53  opcode: xora
+54  opcode: shla
+55  opcode: slia
+56  opcode: shra
+57  opcode: sria
+58  opcode: cmpa
+59  opcode: ldra
+60  opcode: stra
+61  opcode: lib
+62  opcode: psbd
+63  opcode: psbr
+64  opcode: pldb
+65  opcode: plrb
+66  opcode: tdb
+67  opcode: trb
+68  opcode: addb
+69  opcode: subb
+70  opcode: divb
+71  opcode: mulb
+72  opcode: incb
+73  opcode: decb
+74  opcode: andb
+75  opcode: gorb
+76  opcode: xorb
+77  opcode: cmpb
+78  opcode: shlb
+79  opcode: slib
+80  opcode: shrb
+81  opcode: srib
+82  opcode: ldrb
+83  opcode: strb
+84  opcode: ci
+85  opcode: cieq
+86  opcode: cigr
+87  opcode: cile
+88  opcode: cnza
+89  opcode: ciza
+90  opcode: cnzb
+91  opcode: cizb
+92  opcode: cra
+93  opcode: crb
+94  opcode: bra
+95  opcode: brb
+96  opcode: bi
+97  opcode: bieq
+98  opcode: bigr
+99  opcode: bile
+100 opcode: bnza
+101 opcode: biza
+102 opcode: bnzb
+103 opcode: bizb
+104 opcode: lid
+105 opcode: incd
+106 opcode: decd
+107 opcode: bnzd
+108 opcode: bizd
+
+( syntax sugar )
+
+: tail cofs ;
+
+: ], , cmode compiler ! ;
 
